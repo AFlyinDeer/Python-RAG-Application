@@ -98,7 +98,7 @@ Sources:
 Database Settings (database.py)
 python
 DB_DIR = r"F:\Code\RAGProject\RAG\instance"    # Database storage path
-COLLECTION_NAME = "pdf_docs"                    # ChromaDB collection name
+COLLECTION_NAME = "all_docs"                    # ChromaDB collection name
 EMBEDDING_MODEL = "nomic-embed-text"            # Ollama embedding model
 Document Processing (db_setup.py)
 python

@@ -12,7 +12,7 @@ from user_retrieval import run_interactive
 
 # Configuration
 MODEL_NAME = "llama3.1"
-SIMILARITY_THRESHOLD = 0.7
+SIMILARITY_THRESHOLD = 0.3
 MAX_CHUNKS = 10  
 
 def create_llm():
@@ -34,8 +34,8 @@ class SimilarityRetriever(BaseRetriever):
     """Similarity threshold-based retriever"""
     
     vectorstore: object
-    threshold: float = 0.7
-    max_chunks: int = 8
+    threshold: float = SIMILARITY_THRESHOLD
+    max_chunks: int = MAX_CHUNKS
     
     class Config:
         arbitrary_types_allowed = True
@@ -141,12 +141,12 @@ def run_similarity_search(threshold=SIMILARITY_THRESHOLD):
         
         print(f"Loading vectorstore...")
         vectorstore = load_vectorstore()
-        
-        print(f"Setting up similarity-based QA (threshold: {threshold})...")
+        # Debugging
+        #print(f"Setting up similarity-based QA (threshold: {threshold})...")
         qa_chain = setup_similarity_qa_chain(vectorstore, threshold)
         
-        print(f"Similarity RAG System Ready! (min similarity: {threshold})")
-        print("Type 'quit' to exit\n")
+        # Debugging
+        #print(f"Similarity RAG System Ready! (min similarity: {threshold})")
         
         # Run interactive session
         run_interactive(qa_chain)
@@ -158,5 +158,4 @@ def run_similarity_search(threshold=SIMILARITY_THRESHOLD):
         gc.collect()
 
 if __name__ == "__main__":
-    # Faster version with similarity filtering - lowered threshold for testing
-    run_similarity_search(threshold=0.3)  
+    run_similarity_search()  

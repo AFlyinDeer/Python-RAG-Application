@@ -1,13 +1,14 @@
 import os
 from langchain_ollama import OllamaEmbeddings
 from langchain_chroma import Chroma
+from file_processing import get_processed_files
 
 # Uncomment the line below to debug embeddings
-from debug_embeddings import DebugOllamaEmbeddings as OllamaEmbeddings
+#from debug_embeddings import DebugOllamaEmbeddings as OllamaEmbeddings
 
 # Configuration
 DB_DIR = r"F:\Code\RAGProject\RAG\instance"
-COLLECTION_NAME = "pdf_docs"
+COLLECTION_NAME = "all_docs"
 EMBEDDING_MODEL = "nomic-embed-text"
 
 def load_vectorstore():
@@ -60,7 +61,6 @@ def check_database():
         if count == 0:
             return False, "Database empty"
         
-        from file_processing import get_processed_files
         processed_files = get_processed_files(vectorstore)
         return True, f"{count} documents from {len(processed_files)} files"
         

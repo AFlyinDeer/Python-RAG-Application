@@ -12,7 +12,7 @@ def ask_question(qa_chain, question):
         sources = result["source_documents"]
         
         print(f"\nAnswer: {answer}")
-        print(f"({query_time:.1f}s)")
+        print(f"\n({query_time:.1f}s)")
         
         if sources:
             print(f"\nSources:")

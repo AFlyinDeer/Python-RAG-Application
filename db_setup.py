@@ -7,6 +7,7 @@ from file_processing import get_processed_files, load_and_split_documents, get_d
 DOCS_DIR = r"F:\Code\RAGProject\RAG\documents"
 CHUNK_SIZE = 800
 OVERLAP = 100
+BATCH_SIZE = 50
 
 def setup_database():
     """Main setup function"""
@@ -49,9 +50,8 @@ def setup_database():
         print(f"Adding {len(documents)} chunks to database...")
         
         # Add in batches
-        batch_size = 50
-        for i in range(0, len(documents), batch_size):
-            batch = documents[i:i + batch_size]
+        for i in range(0, len(documents), BATCH_SIZE):
+            batch = documents[i:i + BATCH_SIZE]
             vectorstore.add_documents(batch)
             gc.collect()
         

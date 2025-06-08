@@ -1,122 +1,79 @@
 import os
-import gc
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.schema import Document
 import docx2txt
 
 def get_processed_files(vectorstore):
-    """Get list of files already in the database"""
+    """Get list of files already in database"""
     try:
-        all_docs = vectorstore.get(include=['metadatas'])
-        processed_files = set()
-        
-        for metadata in all_docs['metadatas']:
-            if metadata and 'source_file' in metadata:
-                processed_files.add(metadata['source_file'])
-        
-        return processed_files
-    except Exception:
+        docs = vectorstore.get(include=['metadatas'])
+        return {meta['source_file'] for meta in docs['metadatas'] 
+                if meta and 'source_file' in meta}
+    except:
         return set()
 
-def load_docx(file_path):
-    """Load and extract text from a DOCX file"""
-    try:
-        content = docx2txt.process(file_path)
-        return content.strip() if content else ""
-    except Exception as e:
-        print(f"Error loading DOCX {file_path}: {e}")
-        return ""
-
 def load_and_split_documents(docs_dir, files_to_process, chunk_size=800, overlap=100):
-    """Load and split specified PDF and DOCX files"""
+    """Load and split PDF/DOCX files"""
     if not files_to_process:
         return []
     
-    text_splitter = RecursiveCharacterTextSplitter(
+    splitter = RecursiveCharacterTextSplitter(
         chunk_size=chunk_size,
-        chunk_overlap=overlap,
-        separators=["\n\n", "\n", ". ", " "]
+        chunk_overlap=overlap
     )
     
-    all_documents = []
-    processed_count = 0
-    skipped_files = []
+    documents = []
+    processed = 0
     
-    for file_name in files_to_process:
-        print(f"Processing: {file_name}")
+    for filename in files_to_process:
+        filepath = os.path.join(docs_dir, filename)
+        ext = os.path.splitext(filename)[1].lower()
         
-        file_path = os.path.join(docs_dir, file_name)
-        file_ext = os.path.splitext(file_name)[1].lower()
+        print(f"Processing: {filename}")
         
         try:
-            if file_ext == '.pdf':
-                # Handle PDF files
-                loader = PyPDFLoader(file_path)
-                documents = loader.load()
-                splits = text_splitter.split_documents(documents)
+            if ext == '.pdf':
+                loader = PyPDFLoader(filepath)
+                docs = loader.load()
+                splits = splitter.split_documents(docs)
                 
-                # Add metadata for PDFs
                 for doc in splits:
                     doc.metadata = {
-                        'source_file': file_name,
+                        'source_file': filename,
                         'page': doc.metadata.get('page', 0),
                         'file_type': 'pdf'
                     }
+                documents.extend(splits)
+                processed += 1
                 
-                all_documents.extend(splits)
-                processed_count += 1
-                del loader, documents
-                
-            elif file_ext == '.docx':
-                # Handle DOCX files
-                content = load_docx(file_path)
-                if content:
-                    # Create a Document object for the DOCX content
-                    doc = Document(page_content=content, metadata={'source': file_path})
-                    splits = text_splitter.split_documents([doc])
+            elif ext == '.docx':
+                content = docx2txt.process(filepath)
+                if content and content.strip():
+                    doc = Document(page_content=content.strip())
+                    splits = splitter.split_documents([doc])
                     
-                    # Add metadata for DOCX files
-                    for i, split_doc in enumerate(splits):
-                        split_doc.metadata = {
-                            'source_file': file_name,
-                            'page': i + 1,  # Use chunk number as "page"
+                    for i, split in enumerate(splits):
+                        split.metadata = {
+                            'source_file': filename,
+                            'page': i + 1,
                             'file_type': 'docx'
                         }
-                    
-                    all_documents.extend(splits)
-                    processed_count += 1
+                    documents.extend(splits)
+                    processed += 1
                 else:
-                    print(f"** Skipped ** {file_name}: Empty or corrupted DOCX")
-                    skipped_files.append(file_name)
-            
+                    print(f"** Skipped ** {filename}: Empty file")
+                    
             else:
-                print(f"** Skipped ** {file_name}: Unsupported file type ({file_ext})")
-                skipped_files.append(file_name)
-                continue
-        
+                print(f"** Skipped ** {filename}: File type not supported")
+                
         except Exception as e:
-            print(f"** Skipped ** {file_name}: {str(e)}")
-            skipped_files.append(file_name)
-            continue
-        
-        gc.collect()
+            print(f"** Skipped ** {filename}: {e}")
     
-    # Summary
-    print(f"\n** Successfully processed: {processed_count}/{len(files_to_process)} files **")
-    if skipped_files:
-        print(f"** Skipped files: {', '.join(skipped_files)} **")
-    
-    return all_documents
+    print(f"\nProcessed {processed}/{len(files_to_process)} files")
+    return documents
 
 def get_document_files(docs_dir):
-    """Get list of PDF and DOCX files in directory"""
-    supported_extensions = ['.pdf', '.docx']
-    files = []
-    
-    for filename in os.listdir(docs_dir):
-        file_ext = os.path.splitext(filename)[1].lower()
-        if file_ext in supported_extensions:
-            files.append(filename)
-    
-    return files
+    """Get all files from directory (filtering happens during processing)"""
+    return [f for f in os.listdir(docs_dir) 
+            if os.path.isfile(os.path.join(docs_dir, f))]

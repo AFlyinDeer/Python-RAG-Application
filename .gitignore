@@ -1,2 +1,9 @@
 pycache/
 *.pyc
+*.md
+*.pdf
+*.docx
+*.doc
+*.txt
+
+README.md
