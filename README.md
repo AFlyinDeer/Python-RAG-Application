@@ -34,6 +34,9 @@ Clone or download the project files\
 Install Python dependencies:\
 In a virtual environment run:
 
+py -3 -m venv .venv \
+.venv\Scripts\activate
+
 pip install -r requirements.txt
 
 # ⚛️ Setting up React/Node.js
