@@ -16,39 +16,35 @@ Required Software\
 Python 3.8+\
 Ollama installed and running locally\
 Required Python packages (see Installation section)\
-Ollama Models\
-The system requires these Ollama models to be installed:
+Ollama Models
 
-llama3.1\
-nomic-embed-text
-# Install the LLM model
-ollama pull llama3.1
+# 🦙🧠 Install the LLM model (instruct = GPU Optimized models)
+ollama pull llama3.1\
+ollama run llama3.2:1b-instruct-q4_0\
+ollama run llama3.2:3b-instruct-q4_0
 
-# Install the embedding model
-ollama pull nomic-embed-text
 
-# 🛠️ Installation
+# 🦙🔢 Install the embedding model (Light, Medium, Heavy)
+ollama pull all-minilm\
+ollama pull nomic-embed-text\
+ollama pull mxbai-embed-large
+
+# 🐍 Installation
 Clone or download the project files\
 Install Python dependencies:\
 In a virtual environment run:
 
 pip install -r requirements.txt
 
-# Check if Ollama service is active
-ollama list
+# ⚛️ Setting up React/Node.js
+Install React dependencies:\
+cd frontend
 
-# 📁 Project Structure
-RAG/\
-├── sim_search.py          # Similarity threshold-based retrieval\
-├── database.py            # Vector database management\
-├── db_setup.py           # Database initialization and updates\
-├── file_processing.py    # Document loading and text splitting\
-├── user_retrieval.py     # Interactive Q&A interface\
-├── debug_embeddings.py      # Print the first and last 5 embeded vector points for each chunk\
-├── documents/                 # Place your PDF/DOCX files here\
-└── instance/             # ChromaDB storage (auto-created)
+Intall Node.js dependencies:\
+npm install
 
-# 🚀 Quick Start
+
+# 🚀 Quick Start 🚀
 1. Add Your Documents\
 Place your PDF and DOCX files in the documents/ directory:
 
@@ -57,48 +53,28 @@ documents/\
 ├── manual.docx\
 └── report.pdf
 
-# First, set up the database
+# ▶️ First, set up the database
 python db_setup.py
 
-# Then run the main application
-python sim_search.py
+# 📟 Terminal 1 - Start the backend
+python server.py
+
+# 📟 Terminal 2 - Start the frontend  
+cd frontend\
+npm start
+
+# 🌐 Access the application at http://localhost:5000
 
 # ⚙️ Configuration
-Database Settings (database.py)\
-python\
-DB_DIR = r"F:\Code\RAGProject\RAG\instance"    # Database storage path\
-COLLECTION_NAME = "all_docs"                    # ChromaDB collection name\
-EMBEDDING_MODEL = "nomic-embed-text"            # Ollama embedding model\
-Document Processing (db_setup.py)
-python\
-DOCS_DIR = r"F:\Code\RAGProject\RAG\docs"      # Documents directory\
-CHUNK_SIZE = 800                                # Text chunk size\
-OVERLAP = 100                                   # Chunk overlap for context\
-LLM Settings (main.py, sim_search.py)\
-python\
-MODEL_NAME = "llama3.1"        # Ollama model name\
-MAX_CHUNKS = 5                 # Maximum chunks per query\
-SIMILARITY_THRESHOLD = 0.7     # Minimum similarity score (sim_search.py)\
+Found in config.py
 
 # 🔧 Advanced Features
 Adding New Documents\
-The system automatically detects new files:
+The system automatically detects new files
 
-bash
-# Add new files to docs/ directory, then run:
+# 📂 Add new files to docs/ directory, then run:
 python db_setup.py
 
-# Or use the auto-setup version:
-python main_w_db_check.py\
-Similarity Threshold Tuning\
-For more precise results, adjust the similarity threshold:
-
-python
-# In sim_search.py
-run_similarity_search(threshold=0.8)  # Higher = more strict\
-run_similarity_search(threshold=0.5)  # Lower = more inclusive\
-Batch Processing\
-The system processes documents in batches for memory efficienc
 
 # 📊 Performance Optimization
 Memory Management\

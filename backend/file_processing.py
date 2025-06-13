@@ -25,12 +25,13 @@ def load_and_split_documents(docs_dir, files_to_process, chunk_size=800, overlap
     
     documents = []
     processed = 0
+    total_files = len(files_to_process)
     
-    for filename in files_to_process:
+    for i, filename in enumerate(files_to_process):
         filepath = os.path.join(docs_dir, filename)
         ext = os.path.splitext(filename)[1].lower()
         
-        print(f"Processing: {filename}")
+        print(f"Processing {i+1}/{total_files}: {filename}")
         
         try:
             if ext == '.pdf':
@@ -53,10 +54,10 @@ def load_and_split_documents(docs_dir, files_to_process, chunk_size=800, overlap
                     doc = Document(page_content=content.strip())
                     splits = splitter.split_documents([doc])
                     
-                    for i, split in enumerate(splits):
+                    for j, split in enumerate(splits):
                         split.metadata = {
                             'source_file': filename,
-                            'page': i + 1,
+                            'page': j + 1,
                             'file_type': 'docx'
                         }
                     documents.extend(splits)
@@ -70,7 +71,7 @@ def load_and_split_documents(docs_dir, files_to_process, chunk_size=800, overlap
         except Exception as e:
             print(f"** Skipped ** {filename}: {e}")
     
-    print(f"\nProcessed {processed}/{len(files_to_process)} files")
+    print(f"\nProcessed {processed}/{total_files} files")
     return documents
 
 def get_document_files(docs_dir):

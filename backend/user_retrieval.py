@@ -11,7 +11,8 @@ def ask_question(qa_chain, question):
         answer = result["result"]
         sources = result["source_documents"]
         
-        print(f"\nAnswer: {answer}")
+        #print(f"\nAnswer: {answer}")
+        print(f"\n{answer}")
         print(f"\n({query_time:.1f}s)")
         
         if sources:
@@ -47,8 +48,3 @@ def run_interactive(qa_chain):
             continue
         
         ask_question(qa_chain, question)
-
-def quick_query(qa_chain, question):
-    """Ask one question and return results"""
-    answer, sources = ask_question(qa_chain, question)
-    return answer, sources

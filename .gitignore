@@ -1,4 +1,8 @@
-pycache/
+__pycache__/
+node_modules/
+instance/
+
+.venv/
 *.pyc
 *.md
 *.pdf

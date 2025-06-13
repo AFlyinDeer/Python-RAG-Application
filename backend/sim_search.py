@@ -9,25 +9,14 @@ from langchain_core.callbacks import CallbackManagerForRetrieverRun
 from typing import List
 from database import load_vectorstore, check_database
 from user_retrieval import run_interactive
-
-# Configuration
-MODEL_NAME = "llama3.1"
-SIMILARITY_THRESHOLD = 0.3
-MAX_CHUNKS = 10  
+from config import MODEL_NAME, SIMILARITY_THRESHOLD, MAX_CHUNKS, LLM_CONFIG, PROMPT_TEMPLATE
 
 def create_llm():
-    """Create LLM with efficient settings"""
+    """Create LLM with configuration from config.py"""
     llm = OllamaLLM(
         model=MODEL_NAME,
-        temperature=0.7,
-        num_ctx=2048,
-        num_predict=256,
-        num_thread=2,
-        repeat_penalty=1.1,
-        top_k=10,
-        top_p=0.9
+        **LLM_CONFIG  # Unpack the config dictionary
     )
-    
     return llm
 
 class SimilarityRetriever(BaseRetriever):
@@ -77,13 +66,7 @@ def setup_similarity_qa_chain(vectorstore, threshold=SIMILARITY_THRESHOLD):
     """Setup QA chain with similarity threshold-based retrieval"""
     llm = create_llm()
     
-    prompt_template = f"""Analyze the provided context from multiple sources to answer the question comprehensively. Be concise and helpful, expand to give some extra context. Do not ask if the user needs more information or ask the user questions.
-
-    Note: Only highly relevant context (similarity >= {threshold}) is provided below.
-
-    Context: {{context}}
-    Question: {{question}}
-    Answer:"""
+    prompt_template = PROMPT_TEMPLATE.format(threshold=threshold)
     
     prompt = PromptTemplate(
         template=prompt_template,

@@ -1,0 +1,152 @@
+/* PrimeReact Core CSS */
+@import 'primereact/resources/primereact.min.css';
+@import 'primeicons/primeicons.css';
+@import url('https://unpkg.com/primereact/resources/themes/lara-light-blue/theme.css');
+
+/* CSS Variables */
+:root {
+  --bg-primary: #e5e7eb;  /* Now using the old message color */
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f3f4f6;
+  --bg-message: #d1d5db;  /* Darker than the old message color */
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --border: #d1d5db;
+  --blue: #3b82f6;
+  --blue-hover: #2563eb;
+  --green-bg: #dcfce7;
+  --green-text: #166534;
+  --red-bg: #fef2f2;
+  --red-text: #991b1b;
+  --yellow-bg: #fefce8;
+  --yellow-text: #a16207;
+}
+
+.dark {
+  --bg-primary: #111827;
+  --bg-secondary: #1f2937;
+  --bg-tertiary: #374151;
+  --bg-message: #374151;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --text-muted: #9ca3af;
+  --border: #4b5563;
+  --green-bg: rgba(34, 197, 94, 0.1);
+  --green-text: #4ade80;
+  --red-bg: rgba(239, 68, 68, 0.1);
+  --red-text: #f87171;
+  --yellow-bg: rgba(245, 158, 11, 0.1);
+  --yellow-text: #fbbf24;
+}
+
+/* Base Styles */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+/* Layout */
+.app { min-height: 100vh; display: flex; flex-direction: column; }
+.header { position: fixed; top: 0; left: 0; right: 0; z-index: 10; background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 1rem 0; }
+.footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 10; background: var(--bg-secondary); border-top: 1px solid var(--border); padding: 1rem 0; }
+.content { flex: 1; overflow-y: auto; padding: 100px 0; }
+.container { max-width: 56rem; margin: 0 auto; padding: 0 1rem; }
+
+/* Components */
+.flex { display: flex; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-3 { gap: 0.75rem; }
+.text-xl { font-size: 1.25rem; font-weight: 600; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-blue { background: var(--blue); color: white; }
+.btn-blue:hover:not(:disabled) { background: var(--blue-hover); }
+.btn-gray { background: var(--bg-tertiary); color: var(--text-primary); }
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+}
+.status-ready { background: var(--green-bg); color: var(--green-text); }
+.status-error { background: var(--yellow-bg); color: var(--yellow-text); }
+.status-loading { background: var(--bg-tertiary); color: var(--text-secondary); }
+
+.input {
+  width: 100%;
+  padding: 0.75rem 3rem 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+.input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+.input::placeholder { color: var(--text-muted); }
+
+.message {
+  max-width: 48rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+.message-user { background: var(--blue); color: white; margin-left: auto; }
+.message-assistant { background: var(--bg-message); color: var(--text-primary); }
+.message-error { background: var(--red-bg); color: var(--red-text); border: 1px solid var(--red-text); }
+.message-system { background: var(--green-bg); color: var(--green-text); border: 1px solid var(--green-text); }
+
+.sources {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.875rem;
+}
+.source {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  background: var(--bg-primary);
+  border-radius: 0.25rem;
+}
+
+.error-banner {
+  position: fixed;
+  top: 80px;
+  left: 0;
+  right: 0;
+  z-index: 9;
+  background: var(--red-bg);
+  color: var(--red-text);
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--red-text);
+}
+
+.welcome {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-top: 3rem;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
