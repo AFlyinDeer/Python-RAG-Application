@@ -63,7 +63,8 @@ python server.py
 cd frontend\
 npm start
 
-# 🌐 Access the application at http://localhost:5000
+# 🌐 Access the application at 
+http://localhost:5000
 
 # ⚙️ Configuration
 Found in config.py
